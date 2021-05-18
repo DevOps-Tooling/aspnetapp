@@ -29,8 +29,24 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: kkjamdagni
+          password: 2c1e498a-188e-4f5e-97ea-24a2922d48d5
+      
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: user/app:latest
+      
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
